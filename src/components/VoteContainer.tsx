@@ -57,7 +57,7 @@ const VoteContainer: React.FC<VoteContainerProps> = () => {
           />
         </>
       ) : (
-        <p>Thank you for voting!</p>
+        <p style={{color:'white'}}>Thank you for voting!</p>
       )}
     </div>
   );

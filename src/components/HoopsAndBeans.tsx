@@ -27,10 +27,10 @@ const HoopsAndBeans: React.FC = () => {
 
   return (
     <Box sx={{ textAlign: 'center' }}>
-      <Typography variant="h4">Spaghetti Hoops V Baked Beans</Typography>
+      <Typography variant="h4" sx={{ fontWeight: 900, color:'white' }}>Spaghetti Hoops V Baked Beans</Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', gap: '2em' }}>
-        <Typography variant="h6">Spaghetti Hoops: {spaghettiHoops}</Typography>
-        <Typography variant="h6">Baked Beans: {bakedBeans}</Typography>
+        <Typography variant="h6" sx={{ fontWeight: 900, color:'white' }}>Spaghetti Hoops: {spaghettiHoops}</Typography>
+        <Typography variant="h6" sx={{ fontWeight: 900,color:'white' }}>Baked Beans: {bakedBeans}</Typography>
       </Box>
       <img src={hoopsAndBeans} alt="Hoops and Beans" />
 
