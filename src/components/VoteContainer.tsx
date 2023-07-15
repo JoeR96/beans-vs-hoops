@@ -21,7 +21,6 @@ const VoteContainer: React.FC<VoteContainerProps> = () => {
   const dispatch = useDispatch();
 
   const handleVote = async (option: string) => {
-      console.log("defo called")
     const response = await fetch('https://fqzmxzutu1.execute-api.eu-west-2.amazonaws.com/heinz/beansorhoops', {
       method: 'PUT',
       headers: {
@@ -45,7 +44,6 @@ const VoteContainer: React.FC<VoteContainerProps> = () => {
     }
     setHasVoted(true)
     localStorage.setItem('voted', 'true');
-    console.log(localStorage)
   };
 
   return (
