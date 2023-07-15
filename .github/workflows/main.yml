@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - master # Trigger the action on push or pull request, but only for the master branch
+      - vite # Trigger the action on push or pull request, but only for the master branch
 
 jobs:
   build_and_deploy:
