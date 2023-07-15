@@ -29,13 +29,7 @@ const VoteContainer: React.FC<VoteContainerProps> = () => {
       body: JSON.stringify({ voteOption: option })
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      localStorage.setItem('voted', 'true');
-      setHasVoted(true);
-    } else {
-      console.log('Vote failed');
-    }
+
 
     if (option === 'spaghettiHoops') {
       dispatch(voteSpaghettiHoops());
