@@ -44,6 +44,7 @@ const VoteContainer: React.FC<VoteContainerProps> = () => {
     }
     setHasVoted(true)
     localStorage.setItem('voted', 'true');
+    console.log('hello')
   };
 
   return (
