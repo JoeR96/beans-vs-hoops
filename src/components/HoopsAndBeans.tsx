@@ -10,13 +10,9 @@ const HoopsAndBeans: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
         const response = await fetch('https://fqzmxzutu1.execute-api.eu-west-2.amazonaws.com/heinz/beansorhoops');
         const data = await response.json();
         setVotesData(data);
-      } catch (error) {
-        console.error('Error fetching votes data:', error);
-      }
     };
 
     fetchData();
