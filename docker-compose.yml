@@ -1,15 +1,28 @@
 services:
-  portfolio:
+  hoops-vs-beans:
     build:
       context: .
       dockerfile: Dockerfile
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.portfolio.rule=Host(`enjoeneer.dev`)"
-      - "traefik.http.routers.portfolio.entrypoints=websecure"
-      - "traefik.http.services.portfolio.loadbalancer.server.port=5173"
-      - "traefik.http.routers.portfolio.tls=true"
-      - "traefik.http.routers.portfolio.tls.certresolver=myresolver"
+
+      # Existing router for enjoeneer.dev/hoops-vs-beans
+      - "traefik.http.routers.hoops-vs-beans.rule=Host(`enjoeneer.dev`) && PathPrefix(`/hoops-vs-beans`)"
+      - "traefik.http.routers.hoops-vs-beans.entrypoints=websecure"
+      - "traefik.http.services.hoops-vs-beans.loadbalancer.server.port=5173"
+      - "traefik.http.routers.hoops-vs-beans.tls=true"
+      - "traefik.http.routers.hoops-vs-beans.tls.certresolver=myresolver"
+
+      # New router for hoopsvsbeans.com
+      - "traefik.http.routers.hoopsvsbeans.rule=Host(`hoopsvsbeans.com`) || Host(`www.hoopsvsbeans.com`)"
+      - "traefik.http.routers.hoopsvsbeans.entrypoints=websecure"
+      - "traefik.http.routers.hoopsvsbeans.service=hoops-vs-beans-service"
+      - "traefik.http.routers.hoopsvsbeans.tls=true"
+      - "traefik.http.routers.hoopsvsbeans.tls.certresolver=myresolver"
+
+      # Service to directly proxy requests to the `hoops-vs-beans` service
+      - "traefik.http.services.hoops-vs-beans-service.loadbalancer.server.port=5173"  # Ensure this is correctly defined
+
     networks:
       - traefik-network
 

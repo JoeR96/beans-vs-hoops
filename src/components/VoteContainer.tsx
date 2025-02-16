@@ -38,11 +38,10 @@ const VoteContainer: React.FC<VoteContainerProps> = () => {
     }
     setHasVoted(true)
     localStorage.setItem('voted', 'true');
-    console.log('hello')
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 150, paddingBottom: 100}}>
       {!hasVoted ? (
         <>
           <VoteOption

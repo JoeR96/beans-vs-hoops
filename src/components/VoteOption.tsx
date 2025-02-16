@@ -17,7 +17,6 @@ const VoteOption: React.FC<VoteOptionProps> = ({ imageUrl, altText, onVote }) =>
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <img src={imageUrl} alt={altText} style={{ width: '50%', height: 'auto' }} />
       {!isVoting && <Button variant="contained" onClick={handleVote}>Vote</Button>}
     </div>
   );
