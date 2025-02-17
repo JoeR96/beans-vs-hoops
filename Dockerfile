@@ -11,8 +11,8 @@ RUN npm install
 # Copy the rest of the source code
 COPY . .
 
-# Expose the development server port (default is 5173 for Vite)
-EXPOSE 5173
+# Expose the development server port (default is 3000 for NextJS)
+EXPOSE 3000
 
 # Run the development server
 CMD ["npm", "run", "dev", "--", "--host"]

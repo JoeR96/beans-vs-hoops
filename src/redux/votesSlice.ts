@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 interface VoteState {
   spaghettiHoops: number;
@@ -13,20 +13,23 @@ const initialState: VoteState = {
 };
 
 const votesSlice = createSlice({
-  name: 'votes',
+  name: "votes",
   initialState,
   reducers: {
     voteSpaghettiHoops: (state) => {
-      state.spaghettiHoops++;
+      state.spaghettiHoops++; 
       state.lastVote = Date.now();
     },
     voteBakedBeans: (state) => {
       state.bakedBeans++;
       state.lastVote = Date.now();
     },
+    updateVoteCount: (state, action) => {
+      state.spaghettiHoops = action.payload.hoops;
+      state.bakedBeans = action.payload.beans;
+    }
   },
 });
 
-export const { voteSpaghettiHoops, voteBakedBeans } = votesSlice.actions;
-
+export const { voteSpaghettiHoops, voteBakedBeans, updateVoteCount } = votesSlice.actions;
 export default votesSlice.reducer;

@@ -9,7 +9,7 @@ services:
       # Existing router for enjoeneer.dev/hoops-vs-beans
       - "traefik.http.routers.hoops-vs-beans.rule=Host(`enjoeneer.dev`) && PathPrefix(`/hoops-vs-beans`)"
       - "traefik.http.routers.hoops-vs-beans.entrypoints=websecure"
-      - "traefik.http.services.hoops-vs-beans.loadbalancer.server.port=5173"
+      - "traefik.http.services.hoops-vs-beans.loadbalancer.server.port=3000"
       - "traefik.http.routers.hoops-vs-beans.tls=true"
       - "traefik.http.routers.hoops-vs-beans.tls.certresolver=myresolver"
 
@@ -21,7 +21,7 @@ services:
       - "traefik.http.routers.hoopsvsbeans.tls.certresolver=myresolver"
 
       # Service to directly proxy requests to the `hoops-vs-beans` service
-      - "traefik.http.services.hoops-vs-beans-service.loadbalancer.server.port=5173"  # Ensure this is correctly defined
+      - "traefik.http.services.hoops-vs-beans-service.loadbalancer.server.port=3000"  # Ensure this is correctly defined
 
     networks:
       - traefik-network
