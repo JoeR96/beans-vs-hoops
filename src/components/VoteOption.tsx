@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
-import { Button } from '@mui/material';
+"use client";
+
+import React, { useState } from "react";
+import { Button } from "@mui/material";
+import Image from "next/image";
 
 interface VoteOptionProps {
   imageUrl: string;
@@ -13,10 +16,11 @@ const VoteOption: React.FC<VoteOptionProps> = ({ imageUrl, altText, onVote }) =>
   const handleVote = async () => {
     setIsVoting(true);
     await onVote();
-  }
+  };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <Image src={imageUrl} alt={altText} width={200} height={200} />
       {!isVoting && <Button variant="contained" onClick={handleVote}>Vote</Button>}
     </div>
   );

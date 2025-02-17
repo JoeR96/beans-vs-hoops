@@ -1,62 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import VoteOption from './VoteOption';
-import hoopsImage from '../assets/hoops.png';
-import beansImage from '../assets/beans.png';
-import { voteBakedBeans, voteSpaghettiHoops } from '../redux/votesSlice';
-import { useDispatch } from 'react-redux';
+"use client";
 
-interface VoteContainerProps {
-}
+import React, { useState, useEffect } from "react";
+import VoteOption from "./VoteOption";
+import { voteBakedBeans, voteSpaghettiHoops, updateVoteCount } from "@/redux/votesSlice";
+import { useDispatch } from "react-redux";
 
-const VoteContainer: React.FC<VoteContainerProps> = () => {
+const VoteContainer: React.FC = () => {
   const [hasVoted, setHasVoted] = useState<boolean>(false);
-
-  useEffect(() => {
-    const voted = localStorage.getItem('voted');
-    console.log(localStorage)
-    if (voted) {
-      setHasVoted(true);
-    }
-  }, []);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (localStorage.getItem("voted")) setHasVoted(true);
+  }, []);
+
   const handleVote = async (option: string) => {
-    const response = await fetch('https://fqzmxzutu1.execute-api.eu-west-2.amazonaws.com/heinz/beansorhoops', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ voteOption: option })
-    });
+    try {
+      console.log(`Submitting vote for: ${option}`);
 
+      const response = await fetch("/api/votes", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ voteOption: option }),
+      });
 
+      if (!response.ok) throw new Error("Vote submission failed");
 
-    if (option === 'spaghettiHoops') {
-      dispatch(voteSpaghettiHoops());
-    } else if (option === 'bakedBeans') {
-      dispatch(voteBakedBeans());
+      const updatedVotes = await response.json();
+
+      if (option === "hoops") dispatch(voteSpaghettiHoops());
+      if (option === "beans") dispatch(voteBakedBeans());
+
+      dispatch(updateVoteCount(updatedVotes));
+
+      setHasVoted(true);
+      localStorage.setItem("voted", "true");
+    } catch (error) {
+      console.error("Error submitting vote:", error);
     }
-    setHasVoted(true)
-    localStorage.setItem('voted', 'true');
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 150, paddingBottom: 100}}>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
       {!hasVoted ? (
         <>
-          <VoteOption
-            imageUrl={hoopsImage}
-            altText="Spaghetti Hoops"
-            onVote={() => handleVote('spaghettiHoops')}
-          />
-          <VoteOption
-            imageUrl={beansImage}
-            altText="Baked Beans"
-            onVote={() => handleVote('bakedBeans')}
-          />
+          <VoteOption imageUrl="/hoops.png" altText="Spaghetti Hoops" onVote={() => handleVote("hoops")} />
+          <VoteOption imageUrl="/beans.png" altText="Baked Beans" onVote={() => handleVote("beans")} />
         </>
       ) : (
-        <p style={{color:'white'}}>Thank you for voting!</p>
+        <p style={{ color: "white" }}>Thank you for voting!</p>
       )}
     </div>
   );
