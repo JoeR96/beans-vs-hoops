@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import {useBoundedHeinzStore} from "@/state/HeinzBoundedStore";
 
 const BASE_API_URL = "https://seanofthe.dev/hoops-vs-beans-api";
 
 export async function GET() {
+  
   try {
     console.log(`Fetching vote counts from ${BASE_API_URL}/VoteCount`);
 
