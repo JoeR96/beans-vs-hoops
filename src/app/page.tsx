@@ -1,15 +1,14 @@
 "use client"
 import { useBoundedHeinzStore } from "@/state/HeinzBoundedStore";
-import React, { useEffect } from "react";
-import {Voted} from "@/components/Voted";
-import { css } from '@emotion/react';
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import '@fontsource/happy-monkey';
-import {Button} from "@mui/material"; // Defaults to weight 400
+import {Button} from "@mui/material";
 
 export default function Home() {
     const { setHoopsAndBeans, hasVoted, setHasVoted, hoops, beans } = useBoundedHeinzStore();
     const [votedFor, setVotedFor] = React.useState<string | null>(null);
+    const [dataLoaded, setDataLoaded] = useState(false);
 
     useEffect(() => {
         const voted = localStorage.getItem("voted");
@@ -22,12 +21,10 @@ export default function Home() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                console.log("Fetching latest vote counts...");
-                
                 const response = await fetch("/api/votes");
                 const voteResponse: VoteResponse = await response.json();
                 setHoopsAndBeans(voteResponse);
-
+                setDataLoaded(true);
             } catch (error) {
                 console.error("Error fetching vote data:", error);
             }
@@ -68,16 +65,17 @@ export default function Home() {
     ];
 
     const voteMessages = {
-        hoops: "You're the Hoops Champion: may your days be saucy!",
-        beans: "Bean there, done that: you're the Master of Beans!"
+        hoops: "Hoop there it is!",
+        beans: "Bean there, done that!"
     };
 
+    // @ts-ignore
     return (
-        <div>
+        <div style={{ overflow: 'hidden' }}>
             <h1 style={{
                         textAlign: 'center',
-                        fontSize: '7.5em',
                         fontWeight: 'bold',
+                        fontSize: '8vh',
                         fontFamily: 'happy monkey, Arial, sans-serif',
                         background: 'linear-gradient(to right, #0095A3 30%, #F9A812 70%)',
                         WebkitBackgroundClip: 'text',
@@ -91,92 +89,118 @@ export default function Home() {
             >
                         Hoops vs Beans
             </h1>
-            <div style={{display: 'flex', justifyContent: 'center', gap: '5em'}}>
-                {voteOptions.map((option, index) => (
-                    <div
-                        key={index}
-                        style={{
-                            textAlign: 'center',
-                            fontSize: '5em',
-                            fontWeight: 'bold',
-                            fontFamily: 'happy monkey, Arial, sans-serif',
-                            color: option.text === 'Hoops' ? '#0095A3' : '#F9A812',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextStrokeWidth: '1px',
-                            WebkitTextStrokeColor: 'black',
-                            transition: 'transform 0.3s',
-                        }}
-                        onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-                        onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                    >
-                        {option.votes} votes
-                    </div>
-                ))}
-            </div>
+            {dataLoaded && (
+                <div style={{display: 'flex', justifyContent: 'center', gap: '5em'}}>
+                    {voteOptions.map((option, index) => (
+                        <div key={index} style={{textAlign: 'center'}}>
+                            <div
+                                style={{
+                                    fontSize: '4vh',
+                                    fontWeight: 'bold',
+                                    fontFamily: 'happy monkey, Arial, sans-serif',
+                                    color: option.text === 'Hoops' ? '#0095A3' : '#F9A812',
+                                    WebkitBackgroundClip: 'text',
+                                    WebkitTextStrokeWidth: '1px',
+                                    WebkitTextStrokeColor: 'black',
+                                    transition: 'transform 0.3s',
+                                }}
+                                onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                                onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                            >
+                                {option.text}
+                            </div>
+                            <div
+                                style={{
+                                    fontSize: '5vh',
+                                    fontWeight: 'bold',
+                                    fontFamily: 'happy monkey, Arial, sans-serif',
+                                    color: option.text === 'Hoops' ? '#0095A3' : '#F9A812',
+                                    WebkitBackgroundClip: 'text',
+                                    WebkitTextStrokeWidth: '1px',
+                                    WebkitTextStrokeColor: 'black',
+                                    transition: 'transform 0.3s',
+                                }}
+                                onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                                onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                            >
+                                {option.votes}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
             <div style={{display: 'flex', justifyContent: 'center'}}>
                 <Image
                     src={'/beansAndHoops.png'}
                     alt={'Hoops and Beans'}
-                    width={250}
-                    height={250}
+                    width={500}
+                    height={500}
                     style={{
-                        height: '50%',
-                        width: '50%',
+                        overflow: 'hidden',
+                        height: '40vh',
+                        width: '100vh',
+                        maxHeight: '40vh',
+                        maxWidth: '100vh',
                         transition: 'transform 0.3s',
                     }}
                     onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
                     onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                 />
             </div>
-            {!hasVoted ? (
-                <div>
-                    <div style={{display: 'flex', justifyContent: 'center', gap: '5em'}}>
-                        {voteOptions.map((option, index) => (
-                        <Button
-                            key={index}
-                            style={{
-                                textAlign: 'center',
-                                fontSize: '1.5em',
-                                fontWeight: 'bold',
-                                fontFamily: 'happy monkey, Arial, sans-serif',
-                                padding: '0.5em 1em',
-                                border: '3.75px solid black',
-                                borderRadius: '0.75em',
-                                backgroundColor: option.text === 'Hoops' ? '#0095A3' : '#F9A812',
-                                color: option.text === 'Beans' ? '#0095A3' : '#F9A812',
-                                cursor: 'pointer',
-                                transition: 'background-color 0.3s, transform 0.3s',
-                            }}
-                            onClick={() => option.onVote()}
-                            onMouseOver={(e) => {
-                                e.currentTarget.style.backgroundColor = 'lightgray';
-                                e.currentTarget.style.transform = 'scale(1.1)';
-                            }}
-                            onMouseOut={(e) => {
-                                e.currentTarget.style.backgroundColor = option.text === 'Hoops' ? '#0095A3' : '#F9A812';
-                                e.currentTarget.style.transform = 'scale(1)';
-                            }}>
-                            Vote for {option.text}
-                        </Button>
-                        ))}
+            {dataLoaded && (
+                !hasVoted ? (
+                    <div>
+                        <div style={{display: 'flex', justifyContent: 'center', gap: '5em'}}>
+                            {voteOptions.map((option, index) => (
+                            <Button
+                                key={index}
+                                style={{
+                                    textAlign: 'center',
+                                    fontSize: '1.5vh',
+                                    fontWeight: 'bold',
+                                    fontFamily: 'happy monkey, Arial, sans-serif',
+                                    padding: '0.5em 1em',
+                                    border: '3.75px solid black',
+                                    borderRadius: '0.75em',
+                                    backgroundColor: option.text === 'Hoops' ? '#0095A3' : '#F9A812',
+                                    color: option.text === 'Beans' ? '#0095A3' : '#F9A812',
+                                    cursor: 'pointer',
+                                    transition: 'background-color 0.3s, transform 0.3s',
+                                }}
+                                onClick={() => option.onVote()}
+                                onMouseOver={(e) => {
+                                    e.currentTarget.style.backgroundColor = 'lightgray';
+                                    e.currentTarget.style.transform = 'scale(1.1)';
+                                }}
+                                onMouseOut={(e) => {
+                                    e.currentTarget.style.backgroundColor = option.text === 'Hoops' ? '#0095A3' : '#F9A812';
+                                    e.currentTarget.style.transform = 'scale(1)';
+                                }}>
+                                Vote for {option.text}
+                            </Button>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            ) : (
-                <div style={{
-                    margin: '1em',
-                    textAlign: 'center',
-                    fontSize: '3.5em',
-                    fontWeight: 'bold',
-                    fontFamily: 'happy monkey, Arial, sans-serif',
-                    background: 'linear-gradient(to right, #0095A3 30%, #F9A812 70%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    WebkitTextStrokeWidth: '1.25px',
-                    WebkitTextStrokeColor: 'black',
-                    transition: 'transform 0.3s',
-                }}>
-                    {votedFor ? voteMessages[votedFor] : ""}
-                </div>
+                ) : (
+                    <div style={{
+                        textAlign: 'center',
+                        fontSize: '2em',
+                        marginBottom: '1em',
+                        fontWeight: 'bold',
+                        fontFamily: 'happy monkey, Arial, sans-serif',
+                        background: 'linear-gradient(to right, #0095A3 30%, #F9A812 70%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        WebkitTextStrokeWidth: '0.5px',
+                        WebkitTextStrokeColor: 'black',
+                        transition: 'transform 0.3s',
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                    onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                    >
+                        {votedFor && voteMessages.hasOwnProperty(votedFor) ? voteMessages[votedFor as keyof typeof voteMessages] : ""}
+                    </div>
+                )
             )}
         </div>
     );
