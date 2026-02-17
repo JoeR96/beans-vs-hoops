@@ -1,14 +1,34 @@
 "use client"
 import { useBoundedHeinzStore } from "@/state/HeinzBoundedStore";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import '@fontsource/happy-monkey';
 import {Button} from "@mui/material";
+import { useGongSound } from "@/hooks/useGongSound";
+import { useFireworks } from "@/hooks/useFireworks";
+import { useVotePolling, VoteChangeEvent } from "@/hooks/useVotePolling";
 
 export default function Home() {
     const { setHoopsAndBeans, hasVoted, setHasVoted, hoops, beans } = useBoundedHeinzStore();
     const [votedFor, setVotedFor] = React.useState<string | null>(null);
     const [dataLoaded, setDataLoaded] = useState(false);
+
+    const hoopsCountRef = useRef<HTMLDivElement>(null);
+    const beansCountRef = useRef<HTMLDivElement>(null);
+
+    const { playGong, unlockAudio } = useGongSound();
+    const { fireAt } = useFireworks();
+
+    const handleVoteDetected = useCallback(
+        (event: VoteChangeEvent) => {
+            playGong();
+            const ref = event.side === "hoops" ? hoopsCountRef : beansCountRef;
+            fireAt(ref.current, event.side);
+        },
+        [playGong, fireAt]
+    );
+
+    useVotePolling(handleVoteDetected);
 
     useEffect(() => {
         const voted = localStorage.getItem("voted");
@@ -54,6 +74,12 @@ export default function Home() {
             setHasVoted(true);
             setVotedFor(option);
             localStorage.setItem("voted", option);
+
+            playGong();
+            fireAt(
+                option === "hoops" ? hoopsCountRef.current : beansCountRef.current,
+                option as "hoops" | "beans"
+            );
         } catch (error) {
             console.error("Error processing vote:", error);
         }
@@ -71,7 +97,7 @@ export default function Home() {
 
     // @ts-ignore
     return (
-        <div style={{ overflow: 'hidden' }}>
+        <div style={{ overflow: 'hidden' }} onClick={unlockAudio}>
             <h1 style={{
                         textAlign: 'center',
                         fontWeight: 'bold',
@@ -110,6 +136,7 @@ export default function Home() {
                                 {option.text}
                             </div>
                             <div
+                                ref={option.text === 'Hoops' ? hoopsCountRef : beansCountRef}
                                 style={{
                                     fontSize: '5vh',
                                     fontWeight: 'bold',
